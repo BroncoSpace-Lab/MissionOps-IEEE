@@ -16,5 +16,3 @@ Branches and Contents:
    - AltitudeCycler.script
    - InclinationCycler.script
    - SectorHeatmapper.py
-   - SAACoverageHeatmapPoster.png
-   - AreaCoverageHeatmaps.zip
