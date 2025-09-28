@@ -4,5 +4,5 @@ _"An Open-Source Analytical Method for Determining Optimal Satellite Orbits for 
 
 
 **Chaos_Model**:
-Python Chaos 8 code with CSV File
-geomagnetic_field_data.csv
+- Python Chaos 8 code with CSV File
+- geomagnetic_field_data.csv
