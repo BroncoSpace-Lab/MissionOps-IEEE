@@ -1,0 +1,225 @@
+%General Mission Analysis Tool(GMAT) Script
+%Created: 2025-07-24 18:02:50
+
+
+%----------------------------------------
+%---------- Spacecraft
+%----------------------------------------
+
+Create Spacecraft DefaultSC;
+DefaultSC.DateFormat = UTCGregorian;
+DefaultSC.Epoch = '01 May 2026 11:59:28.000';
+DefaultSC.CoordinateSystem = EarthFixed;
+DefaultSC.DisplayStateType = Keplerian;
+DefaultSC.SMA = 6780.999999999995;
+DefaultSC.ECC = 0.0002000000000008851;
+DefaultSC.INC = 35;
+DefaultSC.RAAN = 306.6148021947984;
+DefaultSC.AOP = 314.190551535893;
+DefaultSC.TA = 99.88774933214785;
+DefaultSC.DryMass = 1.2;
+DefaultSC.Cd = 2.2;
+DefaultSC.Cr = 1.8;
+DefaultSC.DragArea = 0.016074;
+DefaultSC.SRPArea = 0.016074;
+DefaultSC.SPADDragScaleFactor = 1;
+DefaultSC.SPADSRPScaleFactor = 1;
+DefaultSC.AtmosDensityScaleFactor = 1;
+DefaultSC.ExtendedMassPropertiesModel = 'None';
+DefaultSC.NAIFId = -10000001;
+DefaultSC.NAIFIdReferenceFrame = -9000001;
+DefaultSC.OrbitColor = Red;
+DefaultSC.TargetColor = Teal;
+DefaultSC.OrbitErrorCovariance = [ 1e+70 0 0 0 0 0 ; 0 1e+70 0 0 0 0 ; 0 0 1e+70 0 0 0 ; 0 0 0 1e+70 0 0 ; 0 0 0 0 1e+70 0 ; 0 0 0 0 0 1e+70 ];
+DefaultSC.CdSigma = 1e+70;
+DefaultSC.CrSigma = 1e+70;
+DefaultSC.Id = 'SatId';
+DefaultSC.Attitude = CoordinateSystemFixed;
+DefaultSC.SPADSRPInterpolationMethod = Bilinear;
+DefaultSC.SPADSRPScaleFactorSigma = 1e+70;
+DefaultSC.SPADDragInterpolationMethod = Bilinear;
+DefaultSC.SPADDragScaleFactorSigma = 1e+70;
+DefaultSC.AtmosDensityScaleFactorSigma = 1e+70;
+DefaultSC.ModelFile = 'aura.3ds';
+DefaultSC.ModelOffsetX = 0;
+DefaultSC.ModelOffsetY = 0;
+DefaultSC.ModelOffsetZ = 0;
+DefaultSC.ModelRotationX = 0;
+DefaultSC.ModelRotationY = 0;
+DefaultSC.ModelRotationZ = 0;
+DefaultSC.ModelScale = 1;
+DefaultSC.AttitudeDisplayStateType = 'Quaternion';
+DefaultSC.AttitudeRateDisplayStateType = 'AngularVelocity';
+DefaultSC.AttitudeCoordinateSystem = EarthFixed;
+DefaultSC.EulerAngleSequence = '321';
+
+
+
+
+%----------------------------------------
+%---------- ForceModels
+%----------------------------------------
+
+Create ForceModel DefaultProp_ForceModel;
+DefaultProp_ForceModel.CentralBody = Earth;
+DefaultProp_ForceModel.PrimaryBodies = {Earth};
+DefaultProp_ForceModel.PointMasses = {Luna, Sun};
+DefaultProp_ForceModel.SRP = On;
+DefaultProp_ForceModel.RelativisticCorrection = Off;
+DefaultProp_ForceModel.ErrorControl = RSSStep;
+DefaultProp_ForceModel.GravityField.Earth.Degree = 4;
+DefaultProp_ForceModel.GravityField.Earth.Order = 4;
+DefaultProp_ForceModel.GravityField.Earth.StmLimit = 100;
+DefaultProp_ForceModel.GravityField.Earth.PotentialFile = 'JGM2.cof';
+DefaultProp_ForceModel.GravityField.Earth.TideModel = 'None';
+DefaultProp_ForceModel.SRP.Flux = 1367;
+DefaultProp_ForceModel.SRP.SRPModel = Spherical;
+DefaultProp_ForceModel.SRP.Nominal_Sun = 149597870.691;
+DefaultProp_ForceModel.Drag.AtmosphereModel = JacchiaRoberts;
+DefaultProp_ForceModel.Drag.HistoricWeatherSource = 'ConstantFluxAndGeoMag';
+DefaultProp_ForceModel.Drag.PredictedWeatherSource = 'ConstantFluxAndGeoMag';
+DefaultProp_ForceModel.Drag.CSSISpaceWeatherFile = 'SpaceWeather-All-v1.2.txt';
+DefaultProp_ForceModel.Drag.SchattenFile = 'SchattenPredict.txt';
+DefaultProp_ForceModel.Drag.F107 = 150;
+DefaultProp_ForceModel.Drag.F107A = 150;
+DefaultProp_ForceModel.Drag.MagneticIndex = 3;
+DefaultProp_ForceModel.Drag.SchattenErrorModel = 'Nominal';
+DefaultProp_ForceModel.Drag.SchattenTimingModel = 'NominalCycle';
+DefaultProp_ForceModel.Drag.DragModel = 'Spherical';
+
+%----------------------------------------
+%---------- Propagators
+%----------------------------------------
+
+Create Propagator DefaultProp;
+DefaultProp.FM = DefaultProp_ForceModel;
+DefaultProp.Type = RungeKutta89;
+DefaultProp.InitialStepSize = 120;
+DefaultProp.Accuracy = 9.999999999999999e-10;
+DefaultProp.MinStep = 0.1;
+DefaultProp.MaxStep = 2700;
+DefaultProp.MaxStepAttempts = 50;
+DefaultProp.StopIfAccuracyIsViolated = true;
+
+%----------------------------------------
+%---------- Subscribers
+%----------------------------------------
+
+Create OrbitView DefaultOrbitView;
+DefaultOrbitView.SolverIterations = Current;
+DefaultOrbitView.UpperLeft = [ 0.001127819548872181 0 ];
+DefaultOrbitView.Size = [ 0.5 0.8656410256410256 ];
+DefaultOrbitView.RelativeZOrder = 34;
+DefaultOrbitView.Maximized = false;
+DefaultOrbitView.Add = {DefaultSC, Earth};
+DefaultOrbitView.CoordinateSystem = EarthMJ2000Eq;
+DefaultOrbitView.DrawObject = [ true true ];
+DefaultOrbitView.DataCollectFrequency = 1;
+DefaultOrbitView.UpdatePlotFrequency = 50;
+DefaultOrbitView.NumPointsToRedraw = 0;
+DefaultOrbitView.ShowPlot = false;
+DefaultOrbitView.MaxPlotPoints = 20000;
+DefaultOrbitView.ShowLabels = true;
+DefaultOrbitView.ViewPointReference = Earth;
+DefaultOrbitView.ViewPointVector = [ 30000 0 0 ];
+DefaultOrbitView.ViewDirection = Earth;
+DefaultOrbitView.ViewScaleFactor = 1;
+DefaultOrbitView.ViewUpCoordinateSystem = EarthMJ2000Eq;
+DefaultOrbitView.ViewUpAxis = Z;
+DefaultOrbitView.EclipticPlane = Off;
+DefaultOrbitView.XYPlane = On;
+DefaultOrbitView.WireFrame = Off;
+DefaultOrbitView.Axes = On;
+DefaultOrbitView.Grid = Off;
+DefaultOrbitView.SunLine = Off;
+DefaultOrbitView.UseInitialView = On;
+DefaultOrbitView.StarCount = 7000;
+DefaultOrbitView.EnableStars = On;
+DefaultOrbitView.EnableConstellations = On;
+
+Create GroundTrackPlot DefaultGroundTrackPlot;
+DefaultGroundTrackPlot.SolverIterations = Current;
+DefaultGroundTrackPlot.UpperLeft = [ 0.001503759398496241 0.4518613607188703 ];
+DefaultGroundTrackPlot.Size = [ 0.5 0.4499358151476252 ];
+DefaultGroundTrackPlot.RelativeZOrder = 74;
+DefaultGroundTrackPlot.Maximized = true;
+DefaultGroundTrackPlot.Add = {DefaultSC};
+DefaultGroundTrackPlot.DataCollectFrequency = 1;
+DefaultGroundTrackPlot.UpdatePlotFrequency = 50;
+DefaultGroundTrackPlot.NumPointsToRedraw = 0;
+DefaultGroundTrackPlot.ShowPlot = true;
+DefaultGroundTrackPlot.MaxPlotPoints = 20000;
+DefaultGroundTrackPlot.CentralBody = Earth;
+DefaultGroundTrackPlot.TextureMap = 'ModifiedBlueMarble.jpg';
+
+Create XYPlot XYPlot1;
+XYPlot1.SolverIterations = Current;
+XYPlot1.UpperLeft = [ 0.001127819548872181 0 ];
+XYPlot1.Size = [ 0.5 0.8656410256410256 ];
+XYPlot1.RelativeZOrder = 38;
+XYPlot1.Maximized = false;
+XYPlot1.XVariable = DefaultSC.A1ModJulian;
+XYPlot1.YVariables = {DefaultSC.Earth.Altitude};
+XYPlot1.ShowGrid = true;
+XYPlot1.ShowPlot = false;
+
+%----------------------------------------
+%---------- Arrays, Variables, Strings
+%----------------------------------------
+
+Create Variable BoundaryFunction;
+
+Create Array sat_positions[2];
+
+Create Variable Longitude;
+Create Variable Latitude;
+
+Create Variable field_strength_threshold;
+
+Create Variable MinLat;
+Create Variable MaxLat;
+Create Variable MinLon;
+Create Variable MaxLon;
+
+
+% Set magnetic field strength for the contour range for SAA 
+field_strength_threshold = 24000;
+
+%----------------------------------------
+%---------- Mission Sequence
+%----------------------------------------
+
+% Set a large boundary to be able to compare with Angel's contour image of the SAA (debug)
+MinLat = -70;
+MaxLat = 30;
+MinLon = -150;
+MaxLon = 60;
+
+BeginMissionSequence;
+
+
+%Begin loop that keeps going for 2 days
+While DefaultSC.ElapsedDays < 2
+	%Setting up the variables to take in GMAT satellite position values
+	Latitude = DefaultSC.Earth.Latitude;
+	Longitude = DefaultSC.Earth.Longitude;
+	%Set up the argument for the python function
+	sat_positions(1) = Latitude;
+	sat_positions(2) = Longitude;
+
+	Propagate DefaultProp(DefaultSC) {DefaultSC.ElapsedSecs = 60};
+% Logic to only start calling python function when within the large boundary set 
+	If DefaultSC.Latitude <= MaxLat & DefaultSC.Latitude >= MinLat & DefaultSC.Longitude <= MaxLon & DefaultSC.Longitude >=MinLon
+% Calling Python Function, inputting sat pos data and chosen mag field strength
+		
+		[BoundaryFunction] = Python.GmatBoundaryFunction.check_satellite_in_contour_gmat(sat_positions,field_strength_threshold) 
+	Else
+	EndIf
+% Setup a 'print' to the terminal to be able to debug while the sat propagates 
+	Write BoundaryFunction;
+EndWhile;
+
+
+
+
+

@@ -1,0 +1,360 @@
+%General Mission Analysis Tool(GMAT) Script
+%Created: 2025-06-05 10:48:22
+
+%General Mission Analysis Tool(GMAT) Script
+%Created: 2025-05-21 17:49:33
+
+%----------------------------------------
+%---------- Spacecraft
+%----------------------------------------
+
+Create Spacecraft Sat;
+GMAT Sat.DateFormat = UTCGregorian;
+GMAT Sat.Epoch = '01 Jan 2000 11:59:28.000';
+GMAT Sat.CoordinateSystem = EarthMJ2000Eq;
+GMAT Sat.DisplayStateType = Keplerian;
+GMAT Sat.SMA = 6887.372999999996;
+GMAT Sat.ECC = 0.0002599999999995577;
+GMAT Sat.INC = 45.01299999999997;
+GMAT Sat.RAAN = 71.49400000000001;
+GMAT Sat.AOP = 359.2959999999142;
+GMAT Sat.TA = 138.4310000000647;
+GMAT Sat.DryMass = 850;
+GMAT Sat.Cd = 2.2;
+GMAT Sat.Cr = 1.8;
+GMAT Sat.DragArea = 15;
+GMAT Sat.SRPArea = 1;
+GMAT Sat.SPADDragScaleFactor = 1;
+GMAT Sat.SPADSRPScaleFactor = 1;
+GMAT Sat.AtmosDensityScaleFactor = 1;
+GMAT Sat.ExtendedMassPropertiesModel = 'None';
+GMAT Sat.NAIFId = -10004001;
+GMAT Sat.NAIFIdReferenceFrame = -9004001;
+GMAT Sat.OrbitColor = Red;
+GMAT Sat.TargetColor = Teal;
+GMAT Sat.OrbitErrorCovariance = [ 1e+70 0 0 0 0 0 ; 0 1e+70 0 0 0 0 ; 0 0 1e+70 0 0 0 ; 0 0 0 1e+70 0 0 ; 0 0 0 0 1e+70 0 ; 0 0 0 0 0 1e+70 ];
+GMAT Sat.CdSigma = 1e+70;
+GMAT Sat.CrSigma = 1e+70;
+GMAT Sat.Id = 'SatId';
+GMAT Sat.Attitude = CoordinateSystemFixed;
+GMAT Sat.SPADSRPInterpolationMethod = Bilinear;
+GMAT Sat.SPADSRPScaleFactorSigma = 1e+70;
+GMAT Sat.SPADDragInterpolationMethod = Bilinear;
+GMAT Sat.SPADDragScaleFactorSigma = 1e+70;
+GMAT Sat.AtmosDensityScaleFactorSigma = 1e+70;
+GMAT Sat.ModelFile = 'aura.3ds';
+GMAT Sat.ModelOffsetX = 0;
+GMAT Sat.ModelOffsetY = 0;
+GMAT Sat.ModelOffsetZ = 0;
+GMAT Sat.ModelRotationX = 0;
+GMAT Sat.ModelRotationY = 0;
+GMAT Sat.ModelRotationZ = 0;
+GMAT Sat.ModelScale = 1;
+GMAT Sat.AttitudeDisplayStateType = 'Quaternion';
+GMAT Sat.AttitudeRateDisplayStateType = 'AngularVelocity';
+GMAT Sat.AttitudeCoordinateSystem = EarthMJ2000Eq;
+GMAT Sat.EulerAngleSequence = '321';
+
+%----------------------------------------
+%---------- GroundStations
+%----------------------------------------
+
+Create GroundStation GroundStation1;
+GMAT GroundStation1.OrbitColor = [0 0 255];
+GMAT GroundStation1.TargetColor = [255 128 64];
+GMAT GroundStation1.CentralBody = Earth;
+GMAT GroundStation1.StateType = Spherical;
+GMAT GroundStation1.HorizonReference = Sphere;
+GMAT GroundStation1.Location1 = 34.0508407503684;
+GMAT GroundStation1.Location2 = 243.8153444166824;
+GMAT GroundStation1.Location3 = 0.223;
+GMAT GroundStation1.Id = 'GS 1';
+GMAT GroundStation1.IonosphereModel = 'None';
+GMAT GroundStation1.TroposphereModel = 'None';
+GMAT GroundStation1.DataSource = 'Constant';
+GMAT GroundStation1.Temperature = 295.1;
+GMAT GroundStation1.Pressure = 1013.5;
+GMAT GroundStation1.Humidity = 55;
+GMAT GroundStation1.MinimumElevationAngle = 12;
+
+
+
+%----------------------------------------
+%---------- ForceModels
+%----------------------------------------
+
+Create ForceModel LowEarthProp_ForceModel;
+GMAT LowEarthProp_ForceModel.CentralBody = Earth;
+GMAT LowEarthProp_ForceModel.PrimaryBodies = {Earth};
+GMAT LowEarthProp_ForceModel.PointMasses = {Luna, Sun};
+GMAT LowEarthProp_ForceModel.SRP = Off;
+GMAT LowEarthProp_ForceModel.RelativisticCorrection = Off;
+GMAT LowEarthProp_ForceModel.ErrorControl = RSSStep;
+GMAT LowEarthProp_ForceModel.GravityField.Earth.Degree = 10;
+GMAT LowEarthProp_ForceModel.GravityField.Earth.Order = 10;
+GMAT LowEarthProp_ForceModel.GravityField.Earth.StmLimit = 100;
+GMAT LowEarthProp_ForceModel.GravityField.Earth.PotentialFile = 'JGM2.cof';
+GMAT LowEarthProp_ForceModel.GravityField.Earth.TideModel = 'None';
+GMAT LowEarthProp_ForceModel.Drag.AtmosphereModel = JacchiaRoberts;
+GMAT LowEarthProp_ForceModel.Drag.HistoricWeatherSource = 'ConstantFluxAndGeoMag';
+GMAT LowEarthProp_ForceModel.Drag.PredictedWeatherSource = 'ConstantFluxAndGeoMag';
+GMAT LowEarthProp_ForceModel.Drag.CSSISpaceWeatherFile = 'SpaceWeather-All-v1.2.txt';
+GMAT LowEarthProp_ForceModel.Drag.SchattenFile = 'SchattenPredict.txt';
+GMAT LowEarthProp_ForceModel.Drag.F107 = 150;
+GMAT LowEarthProp_ForceModel.Drag.F107A = 150;
+GMAT LowEarthProp_ForceModel.Drag.MagneticIndex = 3;
+GMAT LowEarthProp_ForceModel.Drag.SchattenErrorModel = 'Nominal';
+GMAT LowEarthProp_ForceModel.Drag.SchattenTimingModel = 'NominalCycle';
+GMAT LowEarthProp_ForceModel.Drag.DragModel = 'Spherical';
+
+%----------------------------------------
+%---------- Propagators
+%----------------------------------------
+
+Create Propagator LowEarthProp;
+GMAT LowEarthProp.FM = LowEarthProp_ForceModel;
+GMAT LowEarthProp.Type = RungeKutta89;
+GMAT LowEarthProp.InitialStepSize = 60;
+GMAT LowEarthProp.Accuracy = 9.999999999999999e-12;
+GMAT LowEarthProp.MinStep = 0.001;
+GMAT LowEarthProp.MaxStep = 2700;
+GMAT LowEarthProp.MaxStepAttempts = 50;
+GMAT LowEarthProp.StopIfAccuracyIsViolated = true;
+
+%----------------------------------------
+%---------- EventLocators
+%----------------------------------------
+
+Create ContactLocator ContactLocator1;
+GMAT ContactLocator1.Target = Sat;
+GMAT ContactLocator1.Filename = 'ContactLocator1.txt';
+GMAT ContactLocator1.OccultingBodies = {Earth};
+GMAT ContactLocator1.InputEpochFormat = 'TAIModJulian';
+GMAT ContactLocator1.InitialEpoch = '21545';
+GMAT ContactLocator1.StepSize = 10;
+GMAT ContactLocator1.FinalEpoch = '21545.138';
+GMAT ContactLocator1.UseLightTimeDelay = true;
+GMAT ContactLocator1.UseStellarAberration = true;
+GMAT ContactLocator1.WriteReport = true;
+GMAT ContactLocator1.RunMode = Automatic;
+GMAT ContactLocator1.UseEntireInterval = true;
+GMAT ContactLocator1.Observers = {GroundStation1};
+GMAT ContactLocator1.LightTimeDirection = Transmit;
+GMAT ContactLocator1.LeftJustified = false;
+GMAT ContactLocator1.ReportPrecision = 6;
+GMAT ContactLocator1.ReportFormat = 'Legacy';
+GMAT ContactLocator1.IntervalStepSize = 0;
+GMAT ContactLocator1.ReportTimeFormat = 'UTCGregorian';
+
+%----------------------------------------
+%---------- Report Files for Region Tracking
+%----------------------------------------
+
+Create ReportFile RegionTrackingReport;
+GMAT RegionTrackingReport.SolverIterations = Current;
+GMAT RegionTrackingReport.UpperLeft = [ 0 0 ];
+GMAT RegionTrackingReport.Size = [ 0.5991992882562278 0.7984189723320159 ];
+GMAT RegionTrackingReport.RelativeZOrder = 557;
+GMAT RegionTrackingReport.Maximized = true;
+GMAT RegionTrackingReport.Filename = 'SouthAmericaRegionTracking.txt';
+GMAT RegionTrackingReport.Precision = 16;
+GMAT RegionTrackingReport.Add = {OrbitIndex, Sat.UTCGregorian, Sat.ElapsedDays, Sat.Earth.Latitude, Sat.Earth.Longitude, RegionEntryCount, EntryTime, TimeInRegion, InRegionFlag, OrbitRegionTime};
+GMAT RegionTrackingReport.WriteHeaders = true;
+GMAT RegionTrackingReport.LeftJustify = On;
+GMAT RegionTrackingReport.ZeroFill = Off;
+GMAT RegionTrackingReport.FixedWidth = true;
+GMAT RegionTrackingReport.Delimiter = ' ';
+GMAT RegionTrackingReport.ColumnWidth = 23;
+GMAT RegionTrackingReport.WriteReport = true;
+
+Create ReportFile SummaryReport;
+GMAT SummaryReport.SolverIterations = Current;
+GMAT SummaryReport.UpperLeft = [ 0 0 ];
+GMAT SummaryReport.Size = [ 0 0 ];
+GMAT SummaryReport.RelativeZOrder = 0;
+GMAT SummaryReport.Maximized = false;
+GMAT SummaryReport.Filename = 'RegionSummary.txt';
+GMAT SummaryReport.Precision = 16;
+GMAT SummaryReport.Add = {RegionEntryCount, TimeInRegion};
+GMAT SummaryReport.WriteHeaders = true;
+GMAT SummaryReport.LeftJustify = On;
+GMAT SummaryReport.ZeroFill = Off;
+GMAT SummaryReport.FixedWidth = true;
+GMAT SummaryReport.Delimiter = ' ';
+GMAT SummaryReport.ColumnWidth = 23;
+GMAT SummaryReport.WriteReport = true;
+
+%----------------------------------------
+%---------- Subscribers
+%----------------------------------------
+
+Create OrbitView DefaultOrbitView;
+GMAT DefaultOrbitView.SolverIterations = Current;
+GMAT DefaultOrbitView.UpperLeft = [ 0.001334519572953737 0 ];
+GMAT DefaultOrbitView.Size = [ 0.2566725978647687 0.4458498023715415 ];
+GMAT DefaultOrbitView.RelativeZOrder = 538;
+GMAT DefaultOrbitView.Maximized = false;
+GMAT DefaultOrbitView.Add = {Sat, Earth};
+GMAT DefaultOrbitView.CoordinateSystem = EarthMJ2000Eq;
+GMAT DefaultOrbitView.DrawObject = [ true true ];
+GMAT DefaultOrbitView.DataCollectFrequency = 1;
+GMAT DefaultOrbitView.UpdatePlotFrequency = 50;
+GMAT DefaultOrbitView.NumPointsToRedraw = 0;
+GMAT DefaultOrbitView.ShowPlot = false;
+GMAT DefaultOrbitView.MaxPlotPoints = 20000;
+GMAT DefaultOrbitView.ShowLabels = true;
+GMAT DefaultOrbitView.ViewPointReference = Earth;
+GMAT DefaultOrbitView.ViewPointVector = [ -60000 30000 20000 ];
+GMAT DefaultOrbitView.ViewDirection = Earth;
+GMAT DefaultOrbitView.ViewScaleFactor = 1;
+GMAT DefaultOrbitView.ViewUpCoordinateSystem = EarthMJ2000Eq;
+GMAT DefaultOrbitView.ViewUpAxis = Z;
+GMAT DefaultOrbitView.EclipticPlane = Off;
+GMAT DefaultOrbitView.XYPlane = On;
+GMAT DefaultOrbitView.WireFrame = Off;
+GMAT DefaultOrbitView.Axes = On;
+GMAT DefaultOrbitView.Grid = Off;
+GMAT DefaultOrbitView.SunLine = Off;
+GMAT DefaultOrbitView.UseInitialView = On;
+GMAT DefaultOrbitView.StarCount = 7000;
+GMAT DefaultOrbitView.EnableStars = On;
+GMAT DefaultOrbitView.EnableConstellations = On;
+
+Create GroundTrackPlot DefaultGroundTrackPlot;
+GMAT DefaultGroundTrackPlot.SolverIterations = Current;
+GMAT DefaultGroundTrackPlot.UpperLeft = [ 0.001334519572953737 0.4466403162055336 ];
+GMAT DefaultGroundTrackPlot.Size = [ 0.2566725978647687 0.4458498023715415 ];
+GMAT DefaultGroundTrackPlot.RelativeZOrder = 555;
+GMAT DefaultGroundTrackPlot.Maximized = false;
+GMAT DefaultGroundTrackPlot.Add = {GroundStation1, Sat};
+GMAT DefaultGroundTrackPlot.DataCollectFrequency = 1;
+GMAT DefaultGroundTrackPlot.UpdatePlotFrequency = 50;
+GMAT DefaultGroundTrackPlot.NumPointsToRedraw = 0;
+GMAT DefaultGroundTrackPlot.ShowPlot = false;
+GMAT DefaultGroundTrackPlot.MaxPlotPoints = 20000;
+GMAT DefaultGroundTrackPlot.CentralBody = Earth;
+GMAT DefaultGroundTrackPlot.TextureMap = 'ModifiedBlueMarble.jpg';
+
+%----------------------------------------
+%---------- Arrays, Variables, Strings
+%----------------------------------------
+
+Create Array SMAList[1,3] INCList[1,3] RAANList[1,3] ECCList[1,3] AOPList[1,3] TAList[1,3];
+
+
+
+%----------------------------------------
+%---------- Region Tracking Variables
+%----------------------------------------
+
+Create Variable RegionEntryCount TimeInRegion InRegionFlag MinLat MaxLat MinLon MaxLon PreviousInRegionFlag EntryTime OrbitIndex;
+Create Variable OrbitRegionTime;
+
+
+
+%----------------------------------------
+%---------- Mission Sequence
+%----------------------------------------
+
+BeginMissionSequence;
+
+
+% Initialize Orbital Parameter arrays
+GMAT SMAList(1) = 7200;
+GMAT SMAList(2) = 7200;
+GMAT SMAList(3) = 7200;
+
+GMAT INCList(1) = 30;
+GMAT INCList(2) = 30;
+GMAT INCList(3) = 30;
+
+
+GMAT RAANList(1) = 79;
+GMAT RAANList(2) = 79;
+GMAT RAANList(3) = 79;
+
+
+GMAT ECCList(1) = 0.00005;
+GMAT ECCList(2) = 0.00005;
+GMAT ECCList(3) = 0.00005;
+
+GMAT AOPList(1) = 359.05;
+GMAT AOPList(2) = 359.05;
+GMAT AOPList(3) = 359.05;
+
+
+GMAT TAList(1) = 38.5;
+GMAT TAList(2) = 38.5;
+GMAT TAList(3) = 38.5;
+
+
+% Set target region bounds: 5S to 40S latitude, 0W to 80W longitude
+GMAT MinLat = -40;  % 40 degrees South
+GMAT MaxLat = -5;   % 5 degrees South
+GMAT MinLon = -80;  % 80 degrees West
+GMAT MaxLon = 0;    % Prime Meridian
+
+% Loop through each orbit configuration
+For OrbitIndex = 1:1:3;
+   
+   % Set spacecraft orbit parameters
+	GMAT Sat.Epoch = '01 Jan 2000 11:59:28.00';
+   GMAT Sat.SMA = SMAList(OrbitIndex);
+   GMAT Sat.INC = INCList(OrbitIndex);
+   GMAT Sat.RAAN = RAANList(OrbitIndex);
+   GMAT Sat.ECC = ECCList(OrbitIndex);
+   GMAT Sat.AOP = AOPList(OrbitIndex);
+   GMAT Sat.TA = TAList(OrbitIndex);
+
+   
+   % Reset tracking variables for each orbit
+	% Removed the resetting of TimeInRegion
+   GMAT RegionEntryCount = 0;
+   GMAT InRegionFlag = 0;
+   GMAT EntryTime = 0;
+   GMAT PreviousInRegionFlag = 0;
+   GMAT OrbitRegionTime = 0;
+   
+   % Propagate for 2 days
+   While Sat.ElapsedDays < 2
+      
+      % Store previous region state
+      GMAT PreviousInRegionFlag = InRegionFlag;
+      
+      % Propagate with small time step
+      Propagate LowEarthProp(Sat) {Sat.ElapsedSecs = 60};
+      
+      % Check if satellite is in the target region
+      If Sat.Earth.Latitude >= MinLat & Sat.Earth.Latitude <= MaxLat & Sat.Earth.Longitude >= MinLon & Sat.Earth.Longitude <= MaxLon
+         
+         % Check 1= true
+         GMAT InRegionFlag = 1;
+         
+         % New entry into region
+         If PreviousInRegionFlag == 0
+            GMAT RegionEntryCount = RegionEntryCount + 1;
+            GMAT EntryTime = 0;
+            Report RegionTrackingReport OrbitIndex Sat.UTCGregorian Sat.ElapsedDays Sat.Earth.Latitude Sat.Earth.Longitude RegionEntryCount EntryTime TimeInRegion InRegionFlag OrbitRegionTime;
+         EndIf;
+         
+         % Accumulate time in region
+         GMAT EntryTime = EntryTime + 0.000694444;
+         GMAT TimeInRegion = TimeInRegion + 0.000694444;
+         GMAT OrbitRegionTime = OrbitRegionTime + 0.000694444;
+      
+      Else
+         % Exiting region
+         If InRegionFlag == 1
+            Report RegionTrackingReport OrbitIndex Sat.UTCGregorian Sat.ElapsedDays Sat.Earth.Latitude Sat.Earth.Longitude RegionEntryCount EntryTime TimeInRegion InRegionFlag OrbitRegionTime;
+         EndIf;
+         
+         GMAT InRegionFlag = 0;
+      
+      EndIf;
+   
+   EndWhile;
+
+EndFor;
+
+% Final summary report
+Report SummaryReport RegionEntryCount TimeInRegion;

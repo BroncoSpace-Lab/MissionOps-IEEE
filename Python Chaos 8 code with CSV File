@@ -1,0 +1,125 @@
+import numpy as np
+import chaosmagpy as cp
+import matplotlib.pyplot as plt
+import cartopy.crs as ccrs
+import cartopy.feature as cfeat
+
+# CHAOS GRID & FIELD COMPUTATION 
+# create full grid
+radius = 6371.2 + 829  # km
+theta = np.linspace(0., 180., num=181)  # colatitude in degrees
+phi = np.linspace(-180., 180., num=361)  # longitude in degrees
+
+phi_grid, theta_grid = np.meshgrid(phi, theta)
+radius_grid = radius * np.ones(phi_grid.shape)
+
+time = cp.data_utils.mjd2000(2025, 5, 24)  # modified Julian date
+
+# create a "model" instance by loading the CHAOS model from a mat-file
+model = cp.load_CHAOS_matfile('C:/Users/Reyna/chaos-model/CHAOS-8.3.mat')
+
+# compute field components on the grid using the method "synth_values_tdep"
+B_radius, B_theta, B_phi = model.synth_values_tdep(
+    time, radius_grid, theta_grid, phi_grid
+)
+
+# ADD: total‑field magnitude and SAA mapping 
+# compute total field intensity
+F = np.sqrt(B_radius**2 + B_theta**2 + B_phi**2)
+
+# utilixing cartopy library to set up the map projection 
+proj = ccrs.PlateCarree()
+fig = plt.figure(figsize=(12, 6))
+ax = plt.axes(projection=proj)
+
+# ploting the magnetic field intesity with pcolormesh
+pcm = ax.pcolormesh(
+    phi_grid,                # longitudes
+    90.0 - theta_grid,       # convert colatitude to latitude
+    F,
+    shading='auto',
+    cmap='viridis',
+    transform=ccrs.PlateCarree()
+)
+
+# overlay SAA contour at 25 000 nT
+contour_level = [22_000]
+cs = ax.contour(
+    phi_grid,
+    90.0 - theta_grid,
+    F,
+    levels=contour_level,
+    colors='red',
+    linewidths=2,
+    transform=ccrs.PlateCarree()
+)
+ax.clabel(cs, fmt='%d nT', colors='red', fontsize=10)
+
+# add coastlines and gridlines for visualization 
+ax.coastlines(linewidth=0.6)
+gl = ax.gridlines(
+    draw_labels=True,
+    linestyle='--',
+    linewidth=0.3,
+    color='white',
+    alpha=0.5
+)
+gl.top_labels = gl.right_labels = False
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# ── GMAT RECTANGLE OVERLAY ───────────────────────────────────────────────
+# this is our previous GMAT rectangular box
+box_lons = [-80, 0, 0, -80, -80]   # west, east, east, west, back to west
+box_lats = [-40, -40, -5, -5, -40] # south, south, north, north, back to south
+ax.plot(
+    box_lons,
+    box_lats,
+    linestyle='--',
+    color='orange',
+    linewidth=2,
+    transform=ccrs.PlateCarree(),
+    label='GMAT region'
+)
+
+# colorbar and title
+cbar = plt.colorbar(pcm, ax=ax, orientation='vertical', shrink=0.7, pad=0.02)
+cbar.set_label('Total Field Intensity (nT)')
+ax.set_title('CHAOS‑8.2 Geomagnetic Field Intensity @ 829 km, 2025.0\n25 000 nT SAA Contour')
+ax.legend(loc='lower left')
+
+plt.show()
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# ── NEW SECTION: Format latitude and longitude data for CSV export ──────
+import pandas as pd
+
+print("Formatting latitude and longitude data for CSV export...")
+
+# Convert colatitude to latitude
+latitude_grid = 90.0 - theta_grid
+
+# Flatten the grids for CSV format
+lon_flat = phi_grid.flatten()
+lat_flat = latitude_grid.flatten()
+field_flat = F.flatten()
+
+# Create formatted DataFrame
+df_formatted = pd.DataFrame({
+    'longitude': np.round(lon_flat, 4),
+    'latitude': np.round(lat_flat, 4),
+    'total_field_intensity_nT': np.round(field_flat, 2)
+})
+
+# Export to CSV
+csv_filename = 'geomagnetic_field_data.csv'
+df_formatted.to_csv(csv_filename, index=False)
+
+print(f"✓ Data exported to: {csv_filename}")
+print(f"✓ Total data points: {len(df_formatted):,}")
+print(f"✓ Longitude range: {df_formatted['longitude'].min():.1f}° to {df_formatted['longitude'].max():.1f}°")
+print(f"✓ Latitude range: {df_formatted['latitude'].min():.1f}° to {df_formatted['latitude'].max():.1f}°")
+print(f"✓ Field intensity range: {df_formatted['total_field_intensity_nT'].min():.0f} to {df_formatted['total_field_intensity_nT'].max():.0f} nT")
+
+# Display first few rows as preview
+print("\nFirst 10 rows of exported data:")
+print(df_formatted.head(10))
