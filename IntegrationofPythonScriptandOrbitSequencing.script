@@ -1,0 +1,400 @@
+%General Mission Analysis Tool(GMAT) Script
+%Created: 2025-06-05 10:48:22
+
+%----------------------------------------
+%---------- Spacecraft
+%----------------------------------------
+
+Create Spacecraft Sat;
+Sat.DateFormat = UTCGregorian;
+Sat.Epoch = '01 Jan 2000 11:59:28.000';
+Sat.CoordinateSystem = EarthMJ2000Eq;
+Sat.DisplayStateType = Keplerian;
+Sat.SMA = 6887.372999999991;
+Sat.ECC = 0.0002600000000000401;
+Sat.INC = 45.01299999999997;
+Sat.RAAN = 71.49400000000001;
+Sat.AOP = 359.2959999998298;
+Sat.TA = 138.4310000001487;
+Sat.DryMass = 850;
+Sat.Cd = 2.2;
+Sat.Cr = 1.8;
+Sat.DragArea = 15;
+Sat.SRPArea = 1;
+Sat.SPADDragScaleFactor = 1;
+Sat.SPADSRPScaleFactor = 1;
+Sat.AtmosDensityScaleFactor = 1;
+Sat.ExtendedMassPropertiesModel = 'None';
+Sat.NAIFId = -10004001;
+Sat.NAIFIdReferenceFrame = -9004001;
+Sat.OrbitColor = Red;
+Sat.TargetColor = Teal;
+Sat.OrbitErrorCovariance = [ 1e+70 0 0 0 0 0 ; 0 1e+70 0 0 0 0 ; 0 0 1e+70 0 0 0 ; 0 0 0 1e+70 0 0 ; 0 0 0 0 1e+70 0 ; 0 0 0 0 0 1e+70 ];
+Sat.CdSigma = 1e+70;
+Sat.CrSigma = 1e+70;
+Sat.Id = 'SatId';
+Sat.Attitude = CoordinateSystemFixed;
+Sat.SPADSRPInterpolationMethod = Bilinear;
+Sat.SPADSRPScaleFactorSigma = 1e+70;
+Sat.SPADDragInterpolationMethod = Bilinear;
+Sat.SPADDragScaleFactorSigma = 1e+70;
+Sat.AtmosDensityScaleFactorSigma = 1e+70;
+Sat.ModelFile = 'aura.3ds';
+Sat.ModelOffsetX = 0;
+Sat.ModelOffsetY = 0;
+Sat.ModelOffsetZ = 0;
+Sat.ModelRotationX = 0;
+Sat.ModelRotationY = 0;
+Sat.ModelRotationZ = 0;
+Sat.ModelScale = 1;
+Sat.AttitudeDisplayStateType = 'Quaternion';
+Sat.AttitudeRateDisplayStateType = 'AngularVelocity';
+Sat.AttitudeCoordinateSystem = EarthMJ2000Eq;
+Sat.EulerAngleSequence = '321';
+
+%----------------------------------------
+%---------- GroundStations
+%----------------------------------------
+
+Create GroundStation GroundStation1;
+GroundStation1.OrbitColor = [0 0 255];
+GroundStation1.TargetColor = [255 128 64];
+GroundStation1.CentralBody = Earth;
+GroundStation1.StateType = Spherical;
+GroundStation1.HorizonReference = Sphere;
+GroundStation1.Location1 = 34.0508407503684;
+GroundStation1.Location2 = 243.8153444166824;
+GroundStation1.Location3 = 0.223;
+GroundStation1.Id = 'GS 1';
+GroundStation1.IonosphereModel = 'None';
+GroundStation1.TroposphereModel = 'None';
+GroundStation1.DataSource = 'Constant';
+GroundStation1.Temperature = 295.1;
+GroundStation1.Pressure = 1013.5;
+GroundStation1.Humidity = 55;
+GroundStation1.MinimumElevationAngle = 12;
+
+
+
+
+%----------------------------------------
+%---------- ForceModels
+%----------------------------------------
+
+Create ForceModel LowEarthProp_ForceModel;
+LowEarthProp_ForceModel.CentralBody = Earth;
+LowEarthProp_ForceModel.PrimaryBodies = {Earth};
+LowEarthProp_ForceModel.PointMasses = {Luna, Sun};
+LowEarthProp_ForceModel.SRP = Off;
+LowEarthProp_ForceModel.RelativisticCorrection = Off;
+LowEarthProp_ForceModel.ErrorControl = RSSStep;
+LowEarthProp_ForceModel.GravityField.Earth.Degree = 10;
+LowEarthProp_ForceModel.GravityField.Earth.Order = 10;
+LowEarthProp_ForceModel.GravityField.Earth.StmLimit = 100;
+LowEarthProp_ForceModel.GravityField.Earth.PotentialFile = 'JGM2.cof';
+LowEarthProp_ForceModel.GravityField.Earth.TideModel = 'None';
+LowEarthProp_ForceModel.Drag.AtmosphereModel = JacchiaRoberts;
+LowEarthProp_ForceModel.Drag.HistoricWeatherSource = 'ConstantFluxAndGeoMag';
+LowEarthProp_ForceModel.Drag.PredictedWeatherSource = 'ConstantFluxAndGeoMag';
+LowEarthProp_ForceModel.Drag.CSSISpaceWeatherFile = 'SpaceWeather-All-v1.2.txt';
+LowEarthProp_ForceModel.Drag.SchattenFile = 'SchattenPredict.txt';
+LowEarthProp_ForceModel.Drag.F107 = 150;
+LowEarthProp_ForceModel.Drag.F107A = 150;
+LowEarthProp_ForceModel.Drag.MagneticIndex = 3;
+LowEarthProp_ForceModel.Drag.SchattenErrorModel = 'Nominal';
+LowEarthProp_ForceModel.Drag.SchattenTimingModel = 'NominalCycle';
+LowEarthProp_ForceModel.Drag.DragModel = 'Spherical';
+
+%----------------------------------------
+%---------- Propagators
+%----------------------------------------
+
+Create Propagator LowEarthProp;
+LowEarthProp.FM = LowEarthProp_ForceModel;
+LowEarthProp.Type = RungeKutta89;
+LowEarthProp.InitialStepSize = 60;
+LowEarthProp.Accuracy = 9.999999999999999e-12;
+LowEarthProp.MinStep = 0.001;
+LowEarthProp.MaxStep = 2700;
+LowEarthProp.MaxStepAttempts = 50;
+LowEarthProp.StopIfAccuracyIsViolated = true;
+
+%----------------------------------------
+%---------- EventLocators
+%----------------------------------------
+
+Create ContactLocator ContactLocator1;
+ContactLocator1.Target = Sat;
+ContactLocator1.Filename = 'ContactLocator1.txt';
+ContactLocator1.OccultingBodies = {Earth};
+ContactLocator1.InputEpochFormat = 'TAIModJulian';
+ContactLocator1.InitialEpoch = '21545';
+ContactLocator1.StepSize = 10;
+ContactLocator1.FinalEpoch = '21545.138';
+ContactLocator1.UseLightTimeDelay = true;
+ContactLocator1.UseStellarAberration = true;
+ContactLocator1.WriteReport = true;
+ContactLocator1.RunMode = Automatic;
+ContactLocator1.UseEntireInterval = true;
+ContactLocator1.Observers = {GroundStation1};
+ContactLocator1.LightTimeDirection = Transmit;
+ContactLocator1.LeftJustified = false;
+ContactLocator1.ReportPrecision = 6;
+ContactLocator1.ReportFormat = 'Legacy';
+ContactLocator1.IntervalStepSize = 0;
+ContactLocator1.ReportTimeFormat = 'UTCGregorian';
+
+%----------------------------------------
+%---------- Report Files for Region Tracking
+%----------------------------------------
+
+Create ReportFile RegionTrackingReport;
+RegionTrackingReport.SolverIterations = Current;
+RegionTrackingReport.UpperLeft = [ 0 0 ];
+RegionTrackingReport.Size = [ 0.5991992882562278 0.7984189723320159 ];
+RegionTrackingReport.RelativeZOrder = 557;
+RegionTrackingReport.Maximized = true;
+RegionTrackingReport.Filename = 'SouthAmericaRegionTracking.txt';
+RegionTrackingReport.Precision = 16;
+RegionTrackingReport.Add = {OrbitIndex, Sat.UTCGregorian, Sat.ElapsedDays, Sat.Earth.Latitude, Sat.Earth.Longitude, RegionEntryCount, EntryTime, TimeInRegion, InRegionFlag, OrbitRegionTime, Sat.EarthMJ2000Eq.VMAG};
+RegionTrackingReport.WriteHeaders = true;
+RegionTrackingReport.LeftJustify = On;
+RegionTrackingReport.ZeroFill = Off;
+RegionTrackingReport.FixedWidth = true;
+RegionTrackingReport.Delimiter = ' ';
+RegionTrackingReport.ColumnWidth = 23;
+RegionTrackingReport.WriteReport = true;
+RegionTrackingReport.AppendToExistingFile = false;
+
+Create ReportFile SummaryReport;
+SummaryReport.SolverIterations = Current;
+SummaryReport.UpperLeft = [ 0 0 ];
+SummaryReport.Size = [ 0 0 ];
+SummaryReport.RelativeZOrder = 0;
+SummaryReport.Maximized = false;
+SummaryReport.Filename = 'RegionSummary.txt';
+SummaryReport.Precision = 16;
+SummaryReport.Add = {RegionEntryCount, TimeInRegion};
+SummaryReport.WriteHeaders = true;
+SummaryReport.LeftJustify = On;
+SummaryReport.ZeroFill = Off;
+SummaryReport.FixedWidth = true;
+SummaryReport.Delimiter = ' ';
+SummaryReport.ColumnWidth = 23;
+SummaryReport.WriteReport = true;
+SummaryReport.AppendToExistingFile = false;
+
+Create ReportFile BoundaryFunctionReport;
+RegionTrackingReport.SolverIterations = Current;
+RegionTrackingReport.UpperLeft = [ 0 0 ];
+RegionTrackingReport.Size = [ 0.5991992882562278 0.7984189723320159 ];
+RegionTrackingReport.RelativeZOrder = 557;
+RegionTrackingReport.Maximized = true;
+RegionTrackingReport.Filename = 'BoundaryFunctionReport.txt';
+RegionTrackingReport.Precision = 16;
+RegionTrackingReport.Add = {OrbitIndex, Sat.UTCGregorian, Sat.ElapsedDays, Sat.Earth.Latitude, Sat.Earth.Longitude, RegionEntryCount, EntryTime, TimeInRegion, InRegionFlag, OrbitRegionTime, Sat.EarthMJ2000Eq.VMAG};
+RegionTrackingReport.WriteHeaders = true;
+RegionTrackingReport.LeftJustify = On;
+RegionTrackingReport.ZeroFill = Off;
+RegionTrackingReport.FixedWidth = true;
+RegionTrackingReport.Delimiter = ' ';
+RegionTrackingReport.ColumnWidth = 23;
+RegionTrackingReport.WriteReport = true;
+RegionTrackingReport.AppendToExistingFile = false;
+
+%----------------------------------------
+%---------- Subscribers
+%----------------------------------------
+
+Create OrbitView DefaultOrbitView;
+DefaultOrbitView.SolverIterations = Current;
+DefaultOrbitView.UpperLeft = [ 0.001334519572953737 0 ];
+DefaultOrbitView.Size = [ 0.2566725978647687 0.4458498023715415 ];
+DefaultOrbitView.RelativeZOrder = 538;
+DefaultOrbitView.Maximized = false;
+DefaultOrbitView.Add = {Sat, Earth};
+DefaultOrbitView.CoordinateSystem = EarthMJ2000Eq;
+DefaultOrbitView.DrawObject = [ true true ];
+DefaultOrbitView.DataCollectFrequency = 1;
+DefaultOrbitView.UpdatePlotFrequency = 50;
+DefaultOrbitView.NumPointsToRedraw = 0;
+DefaultOrbitView.ShowPlot = false;
+DefaultOrbitView.MaxPlotPoints = 20000;
+DefaultOrbitView.ShowLabels = true;
+DefaultOrbitView.ViewPointReference = Earth;
+DefaultOrbitView.ViewPointVector = [ -60000 30000 20000 ];
+DefaultOrbitView.ViewDirection = Earth;
+DefaultOrbitView.ViewScaleFactor = 1;
+DefaultOrbitView.ViewUpCoordinateSystem = EarthMJ2000Eq;
+DefaultOrbitView.ViewUpAxis = Z;
+DefaultOrbitView.EclipticPlane = Off;
+DefaultOrbitView.XYPlane = On;
+DefaultOrbitView.WireFrame = Off;
+DefaultOrbitView.Axes = On;
+DefaultOrbitView.Grid = Off;
+DefaultOrbitView.SunLine = Off;
+DefaultOrbitView.UseInitialView = On;
+DefaultOrbitView.StarCount = 7000;
+DefaultOrbitView.EnableStars = On;
+DefaultOrbitView.EnableConstellations = On;
+
+Create GroundTrackPlot DefaultGroundTrackPlot;
+DefaultGroundTrackPlot.SolverIterations = Current;
+DefaultGroundTrackPlot.UpperLeft = [ 0.001334519572953737 0.4466403162055336 ];
+DefaultGroundTrackPlot.Size = [ 0.2566725978647687 0.4458498023715415 ];
+DefaultGroundTrackPlot.RelativeZOrder = 555;
+DefaultGroundTrackPlot.Maximized = false;
+DefaultGroundTrackPlot.Add = {GroundStation1, Sat};
+DefaultGroundTrackPlot.DataCollectFrequency = 1;
+DefaultGroundTrackPlot.UpdatePlotFrequency = 50;
+DefaultGroundTrackPlot.NumPointsToRedraw = 0;
+DefaultGroundTrackPlot.ShowPlot = true;
+DefaultGroundTrackPlot.MaxPlotPoints = 20000;
+DefaultGroundTrackPlot.CentralBody = Earth;
+DefaultGroundTrackPlot.TextureMap = 'ModifiedBlueMarble.jpg';
+
+%----------------------------------------
+%---------- Arrays, Variables, Strings
+%----------------------------------------
+
+Create Array SMAList[1,3] INCList[1,3] RAANList[1,3] ECCList[1,3] AOPList[1,3] TAList[1,3];
+
+
+
+%----------------------------------------
+%---------- Region Tracking Variables
+%----------------------------------------
+
+Create Variable RegionEntryCount TimeInRegion InRegionFlag MinLat MaxLat MinLon MaxLon PreviousInRegionFlag EntryTime OrbitIndex;
+Create Variable OrbitRegionTime;
+
+Create Variable BoundaryFunction;
+
+Create Array sat_positions[2];
+
+Create Variable Longitude;
+Create Variable Latitude;
+
+Create Variable field_strength_threshold;
+
+Create Variable x;
+
+%----------------------------------------
+%---------- Mission Sequence for Integration
+%----------------------------------------
+%setting magnetic field strength
+field_strength_threshold = 24000;
+
+BeginMissionSequence;
+
+
+% Initialize Orbital Parameter arrays
+SMAList(1) = 6779.13;
+SMAList(2) = 6970.13;
+SMAList(3) = 7071.13;
+
+INCList(1) = 45;
+INCList(2) = 23;
+INCList(3) = 25;
+
+RAANList(1) = 1;
+RAANList(2) = 90;
+RAANList(3) = 65;
+
+ECCList(1) = 0.0001;
+ECCList(2) = 0.0008;
+ECCList(3) = 0;
+
+AOPList(1) = 1;
+AOPList(2) = 270;
+AOPList(3) = 270;
+
+TAList(1) = 0.5;
+TAList(2) = 180;
+TAList(3) = 180;
+
+% Set region bounds: This is set to be larger than SAA, but is small enough to only start the code when approaching the region
+MinLat = -70;
+MaxLat = 30;
+MinLon = -150;
+MaxLon = 60;
+
+% Loop through each orbit configuration
+For OrbitIndex = 1:1:3;
+   
+   Sat.Epoch = '01 Jan 2000 11:59:28.000';
+   % Set spacecraft orbit parameters
+   Sat.SMA = SMAList(OrbitIndex);
+   Sat.INC = INCList(OrbitIndex);
+   Sat.RAAN = RAANList(OrbitIndex);
+   Sat.ECC = ECCList(OrbitIndex);
+   Sat.AOP = AOPList(OrbitIndex);
+   Sat.TA = TAList(OrbitIndex);
+   
+   
+   % Reset tracking variables for each orbit
+   % Removed the resetting of TimeInRegion
+   RegionEntryCount = 0;
+   InRegionFlag = 0;
+   EntryTime = 0;
+   PreviousInRegionFlag = 0;
+   
+   OrbitRegionTime = 0;
+   
+   % Propagate for 2 days
+   While Sat.ElapsedDays < 2
+      %Setting variables for function intake
+		Latitude = Sat.Earth.Latitude;
+		Longitude = Sat.Earth.Longitude;
+		
+		sat_positions(1) = Sat.Earth.Latitude;
+		sat_positions(2) = Sat.Earth.Longitude;
+      % Store previous region state
+      PreviousInRegionFlag = InRegionFlag;
+      
+      % Propagate with small time step
+      Propagate LowEarthProp(Sat) {Sat.ElapsedSecs = 60};
+      
+      % Check if satellite is in the target region
+      If Sat.Earth.Latitude >= MinLat & Sat.Earth.Latitude <= MaxLat & Sat.Earth.Longitude >= MinLon & Sat.Earth.Longitude <= MaxLon
+			
+			 
+			 
+			%Calls Python script that checks if lat and long pos are within the chosen magnetic field strength
+			[BoundaryFunction] = Python.GmatBoundaryFunction.check_satellite_in_contour_gmat(sat_positions,field_strength_threshold)
+		
+			Write BoundaryFunction;
+			% Starts only when the sat is found within the region
+			If BoundaryFunction == 1
+				
+         % Check 1= true
+				InRegionFlag = 1;
+         
+         % New entry into region
+				If PreviousInRegionFlag == 0
+					RegionEntryCount = RegionEntryCount + 1;
+					EntryTime = 0;
+					Report RegionTrackingReport OrbitIndex Sat.UTCGregorian Sat.ElapsedDays Sat.Earth.Latitude Sat.Earth.Longitude RegionEntryCount EntryTime TimeInRegion InRegionFlag OrbitRegionTime Sat.EarthMJ2000Eq.VMAG;
+				EndIf;
+         
+         % Accumulate time in region
+				EntryTime = EntryTime + 0.000694444;
+				TimeInRegion = TimeInRegion + 0.000694444;
+				OrbitRegionTime = OrbitRegionTime + 0.000694444;
+      
+			Else
+         % Exiting region
+				If InRegionFlag == 1
+					Report RegionTrackingReport OrbitIndex Sat.UTCGregorian Sat.ElapsedDays Sat.Earth.Latitude Sat.Earth.Longitude RegionEntryCount EntryTime TimeInRegion InRegionFlag OrbitRegionTime Sat.EarthMJ2000Eq.VMAG;
+				EndIf;
+         
+				InRegionFlag = 0;
+			EndIf;
+      EndIf;
+		
+	EndWhile;
+
+EndFor;
+
+% Final summary report
+Report SummaryReport RegionEntryCount TimeInRegion;
