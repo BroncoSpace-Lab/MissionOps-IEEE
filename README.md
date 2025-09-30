@@ -2,7 +2,7 @@
 For all branches referenced in the Mission Ops IEEE Aerospace Conference 2026 Paper: 
 _"An Open-Source Analytical Method for Determining Optimal Satellite Orbits for Region Targeting"_
 
-_Branches and Contents:_
+_Folders and Contents:_
 1. **Rectangular-SAA-Simulation**
     - RectangularSAA-GMATsimulation.script
 2. **Chaos-Model**
