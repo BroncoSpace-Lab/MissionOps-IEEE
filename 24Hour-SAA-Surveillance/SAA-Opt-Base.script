@@ -1,0 +1,245 @@
+%General Msation Analysis Tool(GMAT) Script
+%Created: 2025-09-11 19:41:55
+
+
+%----------------------------------------
+%---------- Spacecraft
+%----------------------------------------
+
+Create Spacecraft sat;
+sat.DateFormat = TAIModJulian;
+sat.Epoch = '21545';
+sat.CoordinateSystem = EarthMJ2000Eq;
+sat.DisplayStateType = Keplerian;
+sat.SMA = 7200.000000000002;
+sat.ECC = 0.02454974900598154;
+sat.INC = 37.99999999999999;
+sat.RAAN = 306.6148021947984;
+sat.AOP = 314.1905515359927;
+sat.TA = 99.88774933204823;
+sat.DryMass = 850;
+sat.Cd = 2.2;
+sat.Cr = 1.8;
+sat.DragArea = 15;
+sat.SRPArea = 1;
+sat.SPADDragScaleFactor = 1;
+sat.SPADSRPScaleFactor = 1;
+sat.AtmosDensityScaleFactor = 1;
+sat.ExtendedMassPropertiesModel = 'None';
+sat.NAIFId = -10003001;
+sat.NAIFIdReferenceFrame = -9003001;
+sat.OrbitColor = Red;
+sat.TargetColor = Teal;
+sat.OrbitErrorCovariance = [ 1e+70 0 0 0 0 0 ; 0 1e+70 0 0 0 0 ; 0 0 1e+70 0 0 0 ; 0 0 0 1e+70 0 0 ; 0 0 0 0 1e+70 0 ; 0 0 0 0 0 1e+70 ];
+sat.CdSigma = 1e+70;
+sat.CrSigma = 1e+70;
+sat.Id = 'SatId';
+sat.Attitude = CoordinateSystemFixed;
+sat.SPADSRPInterpolationMethod = Bilinear;
+sat.SPADSRPScaleFactorSigma = 1e+70;
+sat.SPADDragInterpolationMethod = Bilinear;
+sat.SPADDragScaleFactorSigma = 1e+70;
+sat.AtmosDensityScaleFactorSigma = 1e+70;
+sat.ModelFile = 'aura.3ds';
+sat.ModelOffsetX = 0;
+sat.ModelOffsetY = 0;
+sat.ModelOffsetZ = 0;
+sat.ModelRotationX = 0;
+sat.ModelRotationY = 0;
+sat.ModelRotationZ = 0;
+sat.ModelScale = 1;
+sat.AttitudeDisplayStateType = 'Quaternion';
+sat.AttitudeRateDisplayStateType = 'AngularVelocity';
+sat.AttitudeCoordinateSystem = EarthMJ2000Eq;
+sat.EulerAngleSequence = '321';
+
+
+%----------------------------------------
+%---------- ForceModels
+%----------------------------------------
+
+Create ForceModel prop_ForceModel;
+prop_ForceModel.CentralBody = Earth;
+prop_ForceModel.PrimaryBodies = {Earth};
+prop_ForceModel.PointMasses = {Luna, Sun};
+prop_ForceModel.SRP = Off;
+prop_ForceModel.RelativisticCorrection = Off;
+prop_ForceModel.ErrorControl = RSSStep;
+prop_ForceModel.GravityField.Earth.Degree = 4;
+prop_ForceModel.GravityField.Earth.Order = 4;
+prop_ForceModel.GravityField.Earth.StmLimit = 100;
+prop_ForceModel.GravityField.Earth.PotentialFile = 'JGM2.cof';
+prop_ForceModel.GravityField.Earth.TideModel = 'None';
+prop_ForceModel.Drag.AtmosphereModel = JacchiaRoberts;
+prop_ForceModel.Drag.HistoricWeatherSource = 'ConstantFluxAndGeoMag';
+prop_ForceModel.Drag.PredictedWeatherSource = 'ConstantFluxAndGeoMag';
+prop_ForceModel.Drag.CSSISpaceWeatherFile = 'SpaceWeather-All-v1.2.txt';
+prop_ForceModel.Drag.SchattenFile = 'SchattenPredict.txt';
+prop_ForceModel.Drag.F107 = 150;
+prop_ForceModel.Drag.F107A = 150;
+prop_ForceModel.Drag.MagneticIndex = 3;
+prop_ForceModel.Drag.SchattenErrorModel = 'Nominal';
+prop_ForceModel.Drag.SchattenTimingModel = 'NominalCycle';
+prop_ForceModel.Drag.DragModel = 'Spherical';
+
+%----------------------------------------
+%---------- Propagators
+%----------------------------------------
+
+Create Propagator prop;
+prop.FM = prop_ForceModel;
+prop.Type = RungeKutta89;
+prop.InitialStepSize = 60;
+prop.Accuracy = 9.999999999999999e-12;
+prop.MinStep = 0.001;
+prop.MaxStep = 2700;
+prop.MaxStepAttempts = 50;
+prop.StopIfAccuracyIsViolated = true;
+
+%----------------------------------------
+%---------- Subscribers
+%----------------------------------------
+
+Create OrbitView DefaultOrbitView;
+DefaultOrbitView.SolverIterations = Current;
+DefaultOrbitView.UpperLeft = [ 0.002941176470588235 0 ];
+DefaultOrbitView.Size = [ 0.5 0.4505119453924915 ];
+DefaultOrbitView.RelativeZOrder = 178;
+DefaultOrbitView.Maximized = false;
+DefaultOrbitView.Add = {sat, Earth};
+DefaultOrbitView.CoordinateSystem = EarthMJ2000Eq;
+DefaultOrbitView.DrawObject = [ true true ];
+DefaultOrbitView.DataCollectFrequency = 1;
+DefaultOrbitView.UpdatePlotFrequency = 50;
+DefaultOrbitView.NumPointsToRedraw = 0;
+DefaultOrbitView.ShowPlot = true;
+DefaultOrbitView.MaxPlotPoints = 20000;
+DefaultOrbitView.ShowLabels = true;
+DefaultOrbitView.ViewPointReference = Earth;
+DefaultOrbitView.ViewPointVector = [ 30000 0 0 ];
+DefaultOrbitView.ViewDirection = Earth;
+DefaultOrbitView.ViewScaleFactor = 1;
+DefaultOrbitView.ViewUpCoordinateSystem = EarthMJ2000Eq;
+DefaultOrbitView.ViewUpAxis = Z;
+DefaultOrbitView.EclipticPlane = Off;
+DefaultOrbitView.XYPlane = On;
+DefaultOrbitView.WireFrame = Off;
+DefaultOrbitView.Axes = On;
+DefaultOrbitView.Grid = Off;
+DefaultOrbitView.SunLine = Off;
+DefaultOrbitView.UseInitialView = On;
+DefaultOrbitView.StarCount = 7000;
+DefaultOrbitView.EnableStars = On;
+DefaultOrbitView.EnableConstellations = On;
+
+Create GroundTrackPlot DefaultGroundTrackPlot;
+DefaultGroundTrackPlot.SolverIterations = Current;
+DefaultGroundTrackPlot.UpperLeft = [ 0.002941176470588235 0.4550625711035267 ];
+DefaultGroundTrackPlot.Size = [ 0.5 0.4505119453924915 ];
+DefaultGroundTrackPlot.RelativeZOrder = 186;
+DefaultGroundTrackPlot.Maximized = false;
+DefaultGroundTrackPlot.Add = {sat};
+DefaultGroundTrackPlot.DataCollectFrequency = 1;
+DefaultGroundTrackPlot.UpdatePlotFrequency = 50;
+DefaultGroundTrackPlot.NumPointsToRedraw = 0;
+DefaultGroundTrackPlot.ShowPlot = true;
+DefaultGroundTrackPlot.MaxPlotPoints = 20000;
+DefaultGroundTrackPlot.CentralBody = Earth;
+DefaultGroundTrackPlot.TextureMap = 'ModifiedBlueMarble.jpg';
+
+Create ReportFile transitReport;
+transitReport.SolverIterations = Current;
+transitReport.UpperLeft = [ 0 0 ];
+transitReport.Size = [ 0 0 ];
+transitReport.RelativeZOrder = 0;
+transitReport.Maximized = false;
+transitReport.Filename = 'transitReport.txt';
+transitReport.Precision = 16;
+transitReport.WriteHeaders = true;
+transitReport.LeftJustify = On;
+transitReport.ZeroFill = Off;
+transitReport.FixedWidth = true;
+transitReport.Delimiter = ' ';
+transitReport.ColumnWidth = 23;
+transitReport.WriteReport = true;
+transitReport.AppendToExistingFile = false;
+
+%----------------------------------------
+%---------- Arrays, Variables, Strings
+%----------------------------------------
+
+%----------------------------------------
+%---------- Msation Sequence
+%----------------------------------------
+
+Create Variable minLat maxLat minLon maxLon flag prevFlag count timeStart timeEnd transitTime;
+Create Variable totalTime;
+
+
+%----------------------------------------
+%---------- Mission Sequence
+%----------------------------------------
+
+
+
+
+
+
+
+%----------------------------------------
+%---------- Msation Sequence
+%----------------------------------------
+
+BeginMissionSequence;
+
+% Define rough bounds for the SAA as well as variables to record transits
+minLat = -40;
+maxLat = -5;
+minLon = -80;
+maxLon = 0;
+flag = 0;
+prevFlag = 0;
+timeStart = 0;
+timeEnd = 0;
+transitTime = 0;
+totalTime = 0;
+count = 0;
+transitReport.Filename = transitReport2.txt;
+
+While sat.ElapsedDays < 7
+   prevFlag = flag;
+   Propagate prop(sat) {sat.ElapsedSecs = 60};
+   % If sat is in SAA...
+   If sat.Earth.Latitude >= minLat & sat.Earth.Latitude <= maxLat & sat.Earth.Longitude >= minLon & sat.Earth.Longitude <= maxLon
+      If prevFlag == 0
+         flag = 1;
+         count = count + 1;
+         timeStart = sat.ElapsedSecs;
+         
+         Report transitReport flag count transitTime totalTime sat.ElapsedDays;
+      
+      EndIf;
+   
+   Else
+      If flag == 1
+         flag = 0;
+         timeEnd = sat.ElapsedSecs;
+         transitTime = (timeEnd - timeStart)/60;
+         totalTime = totalTime + transitTime;
+         
+         Report transitReport flag count transitTime totalTime sat.ElapsedDays;
+         transitTime = 0;
+      EndIf;
+   
+   EndIf;
+
+
+
+EndWhile;
+
+
+
+
+
+
+
